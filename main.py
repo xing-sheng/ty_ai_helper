@@ -1,17 +1,17 @@
-from src.core.ai_service import AIService
-from src.utils.api_utils import print_response
+from flask import Flask, render_template, request, jsonify
+from src.core.ai_service import ask_ai
 
-def main():
-    ai_service = AIService()
-    
-    while True:
-        question = input("请输入问题 (退出请输入'exit'): ")
-        
-        if question.lower() == 'exit':
-            break
-        
-        response = ai_service.ask_question(question)
-        print_response(response)
+app = Flask(__name__)
 
-if __name__ == "__main__":
-    main()
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/ask', methods=['POST'])
+def ask():
+    question = request.form['question']
+    answer = ask_ai(question)
+    return jsonify({'answer': answer})
+
+if __name__ == '__main__':
+    app.run(debug=True)

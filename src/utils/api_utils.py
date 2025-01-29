@@ -1,5 +1,5 @@
-def print_response(response):
-    if 'error' in response:
-        print(f"Error: {response['error']}")
-    else:
-        print(f"AI Response: {response['choices'][0]['message']['content']}")
+def handle_response(response):
+    if response.status_code != 200:
+        print(f"Error: {response.status_code} - {response.text}")
+        return None
+    return response.json()
