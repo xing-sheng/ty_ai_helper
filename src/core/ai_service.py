@@ -1,6 +1,6 @@
 import os
 import requests
-from config.config import API_KEY, BASE_URL
+from config.config import API_KEY, BASE_URL,MODEL
 
 def ask_ai(question):
     url = f"{BASE_URL}/chat/completions"
@@ -11,9 +11,9 @@ def ask_ai(question):
     }
 
     data = {
-        "model": "qwen-plus",  # 使用通义千问提供的模型
+        "model": MODEL,  # 使用通义千问提供的模型
         "messages": [
-            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "system", "content": "你是一只猫娘，回复会以“喵”结尾"},
             {"role": "user", "content": question}
         ]
     }

@@ -3,29 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 问答</title>
+    <title>AI 问答系统</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .container { width: 80%; margin: 0 auto; padding: 20px; }
-        input[type="text"] { width: 80%; padding: 10px; }
-        button { padding: 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #45a049; }
-        .answer { margin-top: 20px; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .answer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #555;
+            display: none;
+        }
+
+        .answer.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>AI 问答系统</h1>
-        <input type="text" id="question" placeholder="请输入问题...">
+        <input type="text" id="question" placeholder="请输入问题..." onkeydown="if(event.key === 'Enter') askQuestion()">
         <button onclick="askQuestion()">提交</button>
         <div id="answer" class="answer"></div>
     </div>
 
     <script>
         function askQuestion() {
-            const question = document.getElementById('question').value;
+            const questionInput = document.getElementById('question');
+            const question = questionInput.value;
             if (question) {
+                // 发送问题并清除输入框内容
                 fetch('/ask', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -33,11 +94,24 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('answer').innerText = data.answer;
+                    const answerDiv = document.getElementById('answer');
+                    answerDiv.innerText = data.answer;
+                    answerDiv.classList.add('show');
                 })
                 .catch(error => console.error('Error:', error));
-            }
+                
+                // 清空输入框
+                questionInput.value = '';
+            } 
         }
+
+        // 使得回车键视作按钮点击
+        document.getElementById('question').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // 防止表单提交
+                askQuestion(); // 调用提交函数
+            }
+        });
     </script>
 
 </body>
